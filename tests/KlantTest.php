@@ -31,7 +31,7 @@ class KlantTest extends TestCase {
     public function testInsertKlantTrue() {
         $testData = [
             'klantEmail' => 'test@example.com',
-            'klantNaam' => 'Test Naam',
+            'klantNaam' => 'Test',
             'klantAdres' => 'Test Adres 303',
             'klantPostcode' => '383HF',
             'klantWoonplaats' => 'Test'
