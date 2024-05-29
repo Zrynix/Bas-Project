@@ -4,7 +4,7 @@
 
 // Autoloader classes via composer
 require '../../vendor/autoload.php';
-use Bas\classes\Klant;
+use Bas\classes\Artikel;
 
 if(isset($_POST["verwijderen"])){
 	

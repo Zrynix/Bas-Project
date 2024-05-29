@@ -100,7 +100,6 @@ class Klant extends Database {
 
         foreach($lijst as $row){
             $txt .= "<tr>";
-            $txt .=  "<td>" . $row["klantId"] . "</td>";
             $txt .=  "<td>" . $row["klantNaam"] . "</td>";
             $txt .=  "<td>" . $row["klantEmail"] . "</td>";
             $txt .=  "<td>" . $row["klantWoonplaats"] . "</td>";
