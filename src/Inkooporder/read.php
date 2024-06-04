@@ -1,21 +1,21 @@
 <!--
     Auteur: Amin
-    Functie: home page CRUD VerkoopOrder
+    Functie: home page CRUD InkoopOrder
 -->
 <!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VerkoopOrder</title>
+    <title>InkoopOrder</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
-    <h1>VerkoopOrder</h1>
+    <h1>InkoopOrder</h1>
     <nav>
         <a class="tvgklant" href='../index.html'>Home</a><br>
-        <a class="tvgklant" href='insert.php'>Toevoegen verkoop order</a><br>
+        <a class="tvgklant" href='insert.php'>Toevoegen inkoop order</a><br>
     </nav>
     
 <?php
@@ -23,13 +23,13 @@
 // Autoloader classes via composer
 require '../../vendor/autoload.php';
 
-use Bas\classes\VerkoopOrder;
+use Bas\classes\InkoopOrder;
 
-// Maak een object VerkoopOrder
-$verkoopOrder = new VerkoopOrder;
+// Maak een object InkoopOrder
+$inkoopOrder = new InkoopOrder;
 
 // Start CRUD
-$verkoopOrder->crudVerkoopOrder();
+$inkoopOrder->crudInkoopOrder();
 
 ?>
 </body>
