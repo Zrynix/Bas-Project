@@ -18,19 +18,28 @@
         <a class="tvgklant" href='insert.php'>Toevoegen verkoop order</a><br>
     </nav>
     
-<?php
+    <?php
+    // Autoloader classes via composer
+    require '../../vendor/autoload.php';
 
-// Autoloader classes via composer
-require '../../vendor/autoload.php';
+    use Bas\classes\VerkoopOrder;
 
-use Bas\classes\VerkoopOrder;
+    // Create a VerkoopOrder object
+    $verkoopOrder = new VerkoopOrder();
 
-// Maak een object VerkoopOrder
-$verkoopOrder = new VerkoopOrder;
+    // Check if delete is requested
+    if (isset($_POST['verwijderen'])) {
+        $verkOrdId = (int) $_POST['verkOrdId'];
+        if ($verkoopOrder->deleteVerkoopOrder($verkOrdId)) {
+            echo '<script>alert("Verkooporder verwijderd");</script>';
+            echo "<meta http-equiv='refresh' content='0'>";
+        } else {
+            echo '<script>alert("Fout bij het verwijderen van verkooporder");</script>';
+        }
+    }
 
-// Start CRUD
-$verkoopOrder->crudVerkoopOrder();
-
-?>
+    // Execute CRUD operations
+    $verkoopOrder->crudVerkoopOrder();
+    ?>
 </body>
 </html>

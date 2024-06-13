@@ -175,7 +175,7 @@ class VerkoopOrder extends Database {
             $stmt->bindParam(':artId', $row['artId'], PDO::PARAM_INT);
             $stmt->bindParam(':verkOrdDatum', $row['verkOrdDatum'], PDO::PARAM_STR);
             $stmt->bindParam(':verkOrdBestAantal', $row['verkOrdBestAantal'], PDO::PARAM_INT);
-            $stmt->bindParam(':verkOrdStatus', $row['verkOrdStatus'], PDO::PARAM_INT);
+            $stmt->bindParam(':verkOrdStatus', $row['verkOrdStatus'], PDO::PARAM_STR); // Updated to string
             $stmt->execute();
             
             return true;
@@ -213,7 +213,7 @@ class VerkoopOrder extends Database {
             $stmt->bindParam(':artId', $verkoopordergegevens['artId'], PDO::PARAM_INT);
             $stmt->bindParam(':verkOrdDatum', $verkoopordergegevens['verkOrdDatum'], PDO::PARAM_STR);
             $stmt->bindParam(':verkOrdBestAantal', $verkoopordergegevens['verkOrdBestAantal'], PDO::PARAM_INT);
-            $stmt->bindParam(':verkOrdStatus', $verkoopordergegevens['verkOrdStatus'], PDO::PARAM_INT);
+            $stmt->bindParam(':verkOrdStatus', $verkoopordergegevens['verkOrdStatus'], PDO::PARAM_STR); // Updated to string
             $stmt->execute();
 
             self::$conn->commit();

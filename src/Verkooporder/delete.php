@@ -1,23 +1,22 @@
-<?php 
+<?php
 // auteur: Amin
-// functie: 
+// functie: delete VerkoopOrder
 
 // Autoloader classes via composer
 require '../../vendor/autoload.php';
-use Bas\classes\Artikel;
+use Bas\classes\VerkoopOrder;
 
-if(isset($_POST["verwijderen"])){
-	
-	// Maak een object Klant
-	
-	
-	// Delete Klant op basis van NR
-	
+if (isset($_GET['verkOrdId'])) {
+    $verkooporder = new VerkoopOrder();
+    $verkOrdId = $_GET['verkOrdId'];
+    $success = $verkooporder->deleteVerkoopOrder($verkOrdId);
 
-	echo '<script>alert("Klant verwijderd")</script>';
-	echo "<script> location.replace('read.php'); </script>";
+    if ($success) {
+        echo '<script>alert("Verkooporder succesvol verwijderd."); location.replace("read.php");</script>';
+    } else {
+        echo '<script>alert("Fout bij het verwijderen van de verkooporder."); location.replace("read.php");</script>';
+    }
+} else {
+    echo '<script>alert("Geen verkOrdId opgegeven."); location.replace("read.php");</script>';
 }
 ?>
-
-
-

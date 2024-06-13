@@ -18,7 +18,11 @@ class Klant extends Database {
      */
     public function crudKlant(): void {
         try {
-            $klanten = $this->getKlanten();
+            if (isset($_POST['search']) && !empty($_POST['klantNaam'])) {
+                $klanten = $this->searchKlanten($_POST['klantNaam']);
+            } else {
+                $klanten = $this->getKlanten();
+            }
             $this->showTable($klanten);
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
@@ -33,6 +37,25 @@ class Klant extends Database {
         try {
             $sql = "SELECT * FROM $this->table_name";
             $stmt = self::$conn->query($sql);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [];
+        }
+    }
+
+    /**
+     * Zoek klanten op basis van naam
+     * @param string $klantNaam
+     * @return array
+     */
+    public function searchKlanten(string $klantNaam): array {
+        try {
+            $sql = "SELECT * FROM $this->table_name WHERE klantNaam LIKE :klantNaam";
+            $stmt = self::$conn->prepare($sql);
+            $naam = '%' . $klantNaam . '%';
+            $stmt->bindParam(':klantNaam', $naam, PDO::PARAM_STR);
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
@@ -84,7 +107,7 @@ class Klant extends Database {
     private function showTable(array $klanten): void {
         echo "<table>";
         if (!empty($klanten)) {
-            echo getTableHeader($klanten[0]);
+            echo $this->getTableHeader($klanten[0]);
             foreach ($klanten as $row) {
                 echo "<tr>";
                 echo "<td>{$row['klantNaam']}</td>";
@@ -93,13 +116,30 @@ class Klant extends Database {
                 echo "<td>{$row['klantAdres']}</td>";
                 echo "<td>{$row['klantPostcode']}</td>";
                 echo "<td><form method='post' action='update.php?klantId={$row['klantId']}'><button name='update'>Wzg</button></form></td>";
-                echo "<td><form method='post' action='delete.php?klantId={$row['klantId']}'><button name='verwijderen'>Verwijderen</button></form></td>";
+                echo "<td><form method='post' action='delete.php?klantId={$row['klantId']}'><button name='verwijderen' onclick='return confirm(\"Weet je zeker dat je deze klant wilt verwijderen?\");'>Verwijderen</button></form></td>";
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='7'>Geen klanten gevonden</td></tr>";
+            echo "<tr><td colspan='6'>Geen klanten gevonden</td></tr>";
         }
         echo "</table>";
+    }
+
+    /**
+     * Genereer de table header op basis van de kolomnamen
+     * @param array $row
+     * @return string
+     */
+    private function getTableHeader(array $row): string {
+        $header = "<tr>";
+        foreach (array_keys($row) as $key) {
+            if ($key !== "klantId") {
+                $header .= "<th>" . htmlspecialchars($key) . "</th>";
+            }
+        }
+        $header .= "<th>Acties</th>";
+        $header .= "</tr>";
+        return $header;
     }
 
     /**
@@ -121,7 +161,7 @@ class Klant extends Database {
     }
 
     /**
-     * Update een klantgegevens
+     * Update klantgegevens
      * @param array $row
      * @return bool
      */
@@ -164,8 +204,7 @@ class Klant extends Database {
         try {
             self::$conn->beginTransaction();
             $klantId = $this->BepMaxKlantId();
-            $sql = "INSERT INTO $
-this->table_name (klantId, klantEmail, klantNaam, klantWoonplaats, klantAdres, klantPostcode)
+            $sql = "INSERT INTO $this->table_name (klantId, klantEmail, klantNaam, klantWoonplaats, klantAdres, klantPostcode)
                     VALUES (:klantId, :klantEmail, :klantNaam, :klantWoonplaats, :klantAdres, :klantPostcode)";
             $stmt = self::$conn->prepare($sql);
             $stmt->bindParam(':klantId', $klantId, PDO::PARAM_INT);

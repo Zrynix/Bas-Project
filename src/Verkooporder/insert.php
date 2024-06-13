@@ -15,7 +15,6 @@ $artikel = new Artikel();
 $verkooporder = new Verkooporder();
 
 $klanten = $klant->getKlanten(); // Hier wordt de getKlanten methode opgeroepen
-
 $artikelen = $artikel->getArtikelen();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["insert"]) && $_POST["insert"] == "Toevoegen") {
@@ -38,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["insert"]) && $_POST["i
             'artId' => intval($_POST['artId']),
             'verkOrdDatum' => $_POST['verkOrdDatum'],
             'verkOrdBestAantal' => intval($_POST['verkOrdBestAantal']),
-            'verkOrdStatus' => intval($_POST['verkOrdStatus'])
+            'verkOrdStatus' => $_POST['verkOrdStatus']
         ];
 
         if ($verkooporder->insertVerkooporder($verkoopordergegevens)) {
@@ -92,10 +91,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["insert"]) && $_POST["i
         <input type="number" id="verkOrdBestAantal" name="verkOrdBestAantal" required/>
         <br>
         <label for="verkOrdStatus">Verkooporder Status:</label>
-        <input type="number" id="verkOrdStatus" name="verkOrdStatus" required/>
+        <select name="verkOrdStatus" required>
+            <option value="Verzonden">Verzonden</option>
+            <option value="Niet Verzonden">Niet Verzonden</option>
+            <option value="Onderweg">Onderweg</option>
+        </select>
         <br><br>
         <input type='submit' name='insert' value='Toevoegen'>
-    </form></br>
+    </form><br>
 
     <a href='read.php'>Terug</a>
 
