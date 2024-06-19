@@ -20,10 +20,6 @@ class Artikel extends Database {
 
     // Methods
 
-    /**
-     * Summary of crudArtikel
-     * @return void
-     */
     public function crudArtikel() : void {
         // Haal alle artikelen op uit de database mbv de method getArtikelen()
         $lijst = $this->getArtikelen();
@@ -32,10 +28,6 @@ class Artikel extends Database {
         $this->showTable($lijst);
     }
 
-    /**
-     * Summary of getArtikelen
-     * @return array
-     */
     public function getArtikelen() : array {
         $sql = "SELECT artId, artOmschrijving, artInkoop, artVerkoop, artVoorraad, artMinVoorraad, artMaxVoorraad, artLocatie FROM " . $this->table_name;
         $stmt = self::$conn->query($sql);
@@ -43,11 +35,6 @@ class Artikel extends Database {
         return $lijst;
     }
 
-    /**
-     * Summary of getArtikel
-     * @param int $artId
-     * @return array
-     */
     public function getArtikel(int $artId) : array {
         $sql = "SELECT artId, artOmschrijving, artInkoop, artVerkoop, artVoorraad, artMinVoorraad, artMaxVoorraad, artLocatie FROM " . $this->table_name . " WHERE artId = :artId";
         $stmt = self::$conn->prepare($sql);
@@ -58,7 +45,6 @@ class Artikel extends Database {
     }
 
     public function dropDownArtikel($row_selected = -1) {
-        // Haal alle artikelen op uit de database mbv de method getArtikelen()
         $lijst = $this->getArtikelen();
         
         echo "<label for='Artikel'>Choose an artikel:</label>";
@@ -73,38 +59,23 @@ class Artikel extends Database {
         echo "</select>";
     }
 
-    /**
-     * Summary of showTable
-     * @param array $lijst
-     * @return void
-     */
     public function showTable(array $lijst) : void {
         $txt = "<table>";
-
-        // Voeg de kolomnamen boven de tabel
         $header = array_keys($lijst[0]);
         unset($header[0]); // 
         $txt .= "<tr>";
         foreach ($header as $col) {
             $txt .= "<th>" . htmlspecialchars($col) . "</th>";
         }
-
-
         foreach ($lijst as $row) {
             $txt .= "<tr>";
-            
             foreach (array_slice($row, 1) as $key => $value) {
                 $txt .= "<td>" . htmlspecialchars($value) . "</td>";
             }
-            
-            // Update
-            // Wijzig knopje
             $txt .=  "<td>
             <form method='post' action='update.php?artId={$row["artId"]}' >       
                 <button name='update'>Wzg</button>    
             </form> </td>";
-
-            // Delete
             $txt .=  "<td>
             <form method='post' action='delete.php?artId={$row["artId"]}' >       
                 <button name='verwijderen'>Verwijderen</button>     
@@ -115,12 +86,6 @@ class Artikel extends Database {
         echo $txt;
     }
 
-    // Delete artikel
-    /**
-     * Summary of deleteArtikel
-     * @param int $artId
-     * @return bool
-     */
     public function deleteArtikel(int $artId) : bool {
         $sql = "DELETE FROM " . $this->table_name . " WHERE artId = :artId";
         $stmt = self::$conn->prepare($sql);
@@ -128,42 +93,36 @@ class Artikel extends Database {
         return $stmt->execute();
     }
 
-    public function updateArtikel($row) : bool {
-        $sql = "UPDATE " . $this->table_name . " SET artOmschrijving = :artOmschrijving, artInkoop = :artInkoop, artVerkoop = :artVerkoop, artVoorraad = :artVoorraad, artMinVoorraad = :artMinVoorraad, artMaxVoorraad = :artMaxVoorraad, artLocatie = :artLocatie WHERE artId = :artId";
+    public function updateArtikel(array $data) : bool {
+        $sql = "UPDATE " . $this->table_name . " 
+                SET artOmschrijving = :artOmschrijving, 
+                    artInkoop = :artInkoop,
+                    artVerkoop = :artVerkoop,
+                    artVoorraad = :artVoorraad,
+                    artMinVoorraad = :artMinVoorraad,
+                    artMaxVoorraad = :artMaxVoorraad,
+                    artLocatie = :artLocatie
+                WHERE artId = :artId";
         $stmt = self::$conn->prepare($sql);
-        $stmt->bindParam(':artId', $row['artId'], \PDO::PARAM_INT);
-        $stmt->bindParam(':artOmschrijving', $row['artOmschrijving'], \PDO::PARAM_STR);
-        $stmt->bindParam(':artInkoop', $row['artInkoop'], \PDO::PARAM_STR);
-        $stmt->bindParam(':artVerkoop', $row['artVerkoop'], \PDO::PARAM_STR);
-        $stmt->bindParam(':artVoorraad', $row['artVoorraad'], \PDO::PARAM_INT);
-        $stmt->bindParam(':artMinVoorraad', $row['artMinVoorraad'], \PDO::PARAM_INT);
-        $stmt->bindParam(':artMaxVoorraad', $row['artMaxVoorraad'], \PDO::PARAM_INT);
-        $stmt->bindParam(':artLocatie', $row['artLocatie'], \PDO::PARAM_STR);
+        $stmt->bindParam(':artId', $data['artId'], \PDO::PARAM_INT);
+        $stmt->bindParam(':artOmschrijving', $data['artOmschrijving'], \PDO::PARAM_STR);
+        $stmt->bindParam(':artInkoop', $data['artInkoop'], \PDO::PARAM_STR);
+        $stmt->bindParam(':artVerkoop', $data['artVerkoop'], \PDO::PARAM_STR);
+        $stmt->bindParam(':artVoorraad', $data['artVoorraad'], \PDO::PARAM_INT);
+        $stmt->bindParam(':artMinVoorraad', $data['artMinVoorraad'], \PDO::PARAM_INT);
+        $stmt->bindParam(':artMaxVoorraad', $data['artMaxVoorraad'], \PDO::PARAM_INT);
+        $stmt->bindParam(':artLocatie', $data['artLocatie'], \PDO::PARAM_STR);
         return $stmt->execute();
     }
 
-    /**
-     * Summary of BepMaxArtId
-     * @return int
-     */
     private function BepMaxArtId() : int {
-        // Bepaal uniek nummer
         $sql = "SELECT MAX(artId)+1 FROM " . $this->table_name;
         return (int) self::$conn->query($sql)->fetchColumn();
     }
 
-    /**
-     * @param array $row
-     * @return bool
-     */
     public function insertArtikel(array $row) : bool {
-        // Bepaal een unieke artId
         $artId = $this->BepMaxArtId();
-        
-        // query
         $sql = "INSERT INTO " . $this->table_name . " (artId, artOmschrijving, artInkoop, artVerkoop, artVoorraad, artMinVoorraad, artMaxVoorraad, artLocatie) VALUES (:artId, :artOmschrijving, :artInkoop, :artVerkoop, :artVoorraad, :artMinVoorraad, :artMaxVoorraad, :artLocatie)";
-        
-        // Prepare
         $stmt = self::$conn->prepare($sql);
         $stmt->bindParam(':artId', $artId, \PDO::PARAM_INT);
         $stmt->bindParam(':artOmschrijving', $row['artOmschrijving'], \PDO::PARAM_STR);
@@ -173,8 +132,6 @@ class Artikel extends Database {
         $stmt->bindParam(':artMinVoorraad', $row['artMinVoorraad'], \PDO::PARAM_INT);
         $stmt->bindParam(':artMaxVoorraad', $row['artMaxVoorraad'], \PDO::PARAM_INT);
         $stmt->bindParam(':artLocatie', $row['artLocatie'], \PDO::PARAM_STR);
-        
-        // Execute
         return $stmt->execute();
     }
 }
